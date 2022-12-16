@@ -12,6 +12,7 @@ listOfPhysicalEventAgents = []
 listOfIPS = []
 matrix = []
 allAgents = []
+randomMatrix = True
 
 #######################################
 
@@ -220,8 +221,15 @@ def sendDissInfromation():
 def sendIP(dissAgentNum, basicAgentNum):
     dissAgent = allAgents[dissAgentNum]
     basicAgent = allAgents[basicAgentNum]
-    if not dissAgent.getIP() == None:
+    if not dissAgent.getIP() is None and read(dissAgentNum, basicAgentNum):
         basicAgent.addIP(dissAgent.getIP())
+
+def read(dissAgent, otherAgent):
+    ## Already checked diss to other, now have to check if they trust eachother
+    if matrix[otherAgent][dissAgent] == "1":
+        return True
+    else:
+        return False
 
 def createAllAgentList():
     for i in range(len(listOfBasicAgents)):
@@ -239,6 +247,11 @@ def sendAllInformation():
                     sendIP(i, count)
                 count += 1
 
+def writeToFile():
+    with open("output.txt", "w") as f:
+        for i in range(len(allAgents)):
+            f.write(allAgents[i].__str__() + "\n")
+
 def main():
     getAgents(995, 5)
     createAllAgentList()
@@ -249,6 +262,4 @@ def main():
             sendAllInformation()
 
 main()
-print(allAgents[989])
-
-##If you want to see the code work, just use print(allAgents[94]) or whatever value you would like!
+writeToFile()
